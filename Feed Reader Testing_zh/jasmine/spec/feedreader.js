@@ -73,7 +73,16 @@ $(function() {
          * 记住 loadFeed() 函数是异步的所以这个而是应该使用 Jasmine 的 beforeEach
          * 和异步的 done() 函数。
          */
+         beforeEach(function (done) {
+           loadFeed(0,function () {
+             done();
+           });
           });
+          it('the loadFeed is working',function (done) {
+            expect($(".feed .entry").length).not.toBe(0);
+                done();
+          });
+        });
     /* TODO: 写一个叫做 "New Feed Selection" 的测试用例 */
       describe('New Feed Selection',function () {
 
