@@ -9,61 +9,68 @@
 $(function() {
     /* 这是我们第一个测试用例 - 其中包含了一定数量的测试。这个用例的测试
      * 都是关于 Rss 源的定义的，也就是应用中的 allFeeds 变量。
-    */
+     */
     describe('RSS Feeds', function() {
         /* 这是我们的第一个测试 - 它用来保证 allFeeds 变量被定义了而且
          * 不是空的。在你开始做这个项目剩下的工作之前最好实验一下这个测试
          * 比如你把 app.js 里面的 allFeeds 变量变成一个空的数组然后刷新
          * 页面看看会发生什么。
-        */
+         */
         it('are defined', function() {
-            expect(allFeeds).toBeDefined();
-            expect(allFeeds.length).not.toBe(0);
+            expect(allFeeds).toBeDefined(); //检查是否被定义
+            expect(allFeeds.length).not.toBe(0); //检查此数组长度是否为0
         });
 
 
         /* TODO:
          * 编写一个测试遍历 allFeeds 对象里面的所有的源来保证有链接字段而且链接不是空的。
          */
-         it('all object have url',function () {
-           for(var i = 0; i<allFeeds.length;i++){
-             expect(allFeeds[i].url).toBeDefined();
-           }
-         });
+        it('all object have url', function() {
+            for(var i = 0; i < allFeeds.length; i++) { //历遍数组中的每个元素，检查是否含有链接字段。
+                expect(allFeeds[i].url).toBeDefined();
+                expect(allFeeds[i].url).not.toBe(0);
+                expect(allFeeds[i].name).toBeDefined();
+                expect(allFeeds[i].name).not.toBe(0);
+            }
+        });
 
         /* TODO:
          * 编写一个测试遍历 allFeeds 对象里面的所有的源来保证有名字字段而且不是空的。
          */
-         it('all object is not null',function () {
-           for(var i = 0; i<allFeeds.length;i++){
-             expect(allFeeds[i]).not.toBeNull();
-           }
-         });
+        it('all object is not null', function() {
+            for(var i = 0; i < allFeeds.length; i++) { //历遍数组中的链接字段检查是否为空。
+                expect(allFeeds[i]).not.toBe(0);
+            }
+        });
     });
 
 
     /* TODO: 写一个叫做 "The menu" 的测试用例 */
-      describe('The menu',function () {
+    describe('The menu', function() {
 
         /* TODO:
          * 写一个测试用例保证菜单元素默认是隐藏的。你需要分析 html 和 css
          * 来搞清楚我们是怎么实现隐藏/展示菜单元素的。
          */
-         it('for check the elements of menu be hidden',function () {
-           expect($("body").prop("className")).toBe("menu-hidden");
-         });
+        it('for check the elements of menu be hidden', function() {
+            expect($("body").hasClass("menu-hidden")).toBe(true); //检查菜单元素是否为隐藏。
+        });
 
-         /* TODO:
-          * 写一个测试用例保证当菜单图标被点击的时候菜单会切换可见状态。这个
-          * 测试应该包含两个 expectation ： 党点击图标的时候菜单是否显示，
-          * 再次点击的时候是否隐藏。
-          */
-          it('for check the elements of menu be click',function () {
-            expect($("div").eq("1").prop("className")).toBe("slide-menu");
-          });
-          });
+        /* TODO:
+         * 写一个测试用例保证当菜单图标被点击的时候菜单会切换可见状态。这个
+         * 测试应该包含两个 expectation ： 党点击图标的时候菜单是否显示，
+         * 再次点击的时候是否隐藏。
+         */
+        it('for check the elements of menu be click', function() {
+            $(".menu-icon-link").trigger("click");
+            expect($("body").hasClass("menu-hidden")).toBe(false); //检查菜单的css类是否有功能。
+           $(".menu-icon-link").trigger("click");
+            expect($("body").hasClass("menu-hidden")).toBe(true);
+
+        });
+    });
     /* TODO: 13. 写一个叫做 "Initial Entries" 的测试用例 */
-      describe('Initial Entries',function () {
+    describe('Initial Entries', function() {
 
 
         /* TODO:
@@ -73,23 +80,40 @@ $(function() {
          * 记住 loadFeed() 函数是异步的所以这个而是应该使用 Jasmine 的 beforeEach
          * 和异步的 done() 函数。
          */
-         beforeEach(function (done) {
-           loadFeed(0,function () {
-             done();
-           });
-          });
-          it('the loadFeed is working',function (done) {
-            expect($(".feed .entry").length).not.toBe(0);
+        beforeEach(function(done) {
+            loadFeed(0, function() { //这是一个异步函数的检查，检查函数是否能正常工作。
                 done();
-          });
+            });
         });
+        it('the loadFeed is working', function() {
+            expect($(".feed .entry").length).not.toBe(0);
+
+        });
+    });
     /* TODO: 写一个叫做 "New Feed Selection" 的测试用例 */
-      describe('New Feed Selection',function () {
 
+    /* TODO:
+     * 写一个测试保证当用 loadFeed 函数加载一个新源的时候内容会真的改变。
+     * 记住，loadFeed() 函数是异步的。
+     */
+    describe('New Feed Selection', function() {
 
-        /* TODO:
-         * 写一个测试保证当用 loadFeed 函数加载一个新源的时候内容会真的改变。
-         * 记住，loadFeed() 函数是异步的。
-         */
-         });
+        var feedOld, feedNew;
+        beforeEach(function(done) {
+            loadFeed(0, function() {
+                feedOld = $('.feed').html();//当在0这个位置读取数据时，把内容赋值给变量feedOld.
+                loadFeed(3, function() {
+                    feedNew = $('.feed').html();//当在3这个位置读取数据时，把内容赋值给变量feedNew.
+                    done();
+                });
+
+            });
+
+        });
+        it('can be loaded correctly', function() {
+
+            expect(feedNew).not.toEqual(feedOld);//比较前后两个内容的区别。
+
+        });
+    });
 }());
